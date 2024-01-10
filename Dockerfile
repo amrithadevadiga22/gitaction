@@ -1,7 +1,7 @@
 FROM gradle:7.4.2-alpine as builder
 WORKDIR /home/app
 COPY . .
-RUN gradle :myapp:build
+RUN gradle --no-daemon build
 
 FROM openjdk:8-jre-alpine as my-app
 WORKDIR /app
