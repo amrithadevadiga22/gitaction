@@ -1,14 +1,11 @@
-FROM gradle:4.7.0-jdk8-alpine AS build
-COPY --chown=gradle:gradle . /home/gradle/src
-WORKDIR /home/gradle/src
-RUN gradle build --no-daemon 
+FROM gradle:7.4.2-alpine as builder
+WORKDIR /home/app
+COPY . .
+RUN gradle :myapp:build
 
-FROM openjdk:8-jre-slim
+FROM openjdk:8-jre-alpine as my-app
+WORKDIR /app
+COPY --from=builder /home/app/MyApp/build/libs/MyApp-1.0-SNAPSHOT.jar /app/
+ENTRYPOINT ["java", "-jar", "/app/MyApp-1.0-SNAPSHOT.jar"]
 
-EXPOSE 8080
-
-RUN mkdir /app
-
-COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
-
-ENTRYPOINT ["java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-Djava.security.egd=file:/dev/./urandom","-jar","my-app-1.0-SNAPSHOT.jar"]
+#ENTRYPOINT ["java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-Djava.security.egd=file:/dev/./urandom","-jar","my-app-1.0-SNAPSHOT.jar"]
