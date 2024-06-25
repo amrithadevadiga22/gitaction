@@ -50,12 +50,12 @@ pipeline {
     //Create ECS infra via terraform and do deployment of application
    stage('Terraform Init') {
             steps {
-                sh 'cd /path/to/your/terraform/project && terraform init'
+                sh 'cd terraform && terraform init'
             }
         }
         stage('Terraform Apply') {
             steps {
-                sh 'cd /path/to/your/terraform/project && terraform apply -auto-approve'
+                sh 'cd terraform && terraform apply -auto-approve'
             }
         }
  }
